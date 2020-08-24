@@ -2,9 +2,10 @@
 
 
 Initial setup
-1. Install Heroku Command Line Interface (CLI) 
-2. Setup your MongoDB Atlas account (make sure to set the IP access setting in mongodb atlas such that everyone can acess that)
-3. Create a new user, database and collection
+1. Sign up for [Azure](https://azure.microsoft.com/en-us/) account (credit card details required)
+2. Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest&tabs=azure-cli)
+3. Setup your MongoDB Atlas account (make sure to set the IP access setting in mongodb atlas such that everyone can acess that)
+4. Create a new user, database and collection
 
 Connecting to MongoDB Atlas cluster (via command line)
 1. Click the connect button (after selecting your cluster), set Node.js version 2.2.12 or later
@@ -31,26 +32,73 @@ Deploying application on localhost (port:8080)
 node app.js
 ~~~
 
-Initiating a Heroku session (from the applicaiton folder)
+Login into azure account
 ~~~
-heroku login
+az login
 ~~~
 
-Creating framework for production
+Setting up new user credentials (Username should be unique in Azure) (Password should have atleast an uppercase, a lowercase alphabet and a number)
 ~~~
-git create --remote production
+az webapp deployment user set --user-name <your application name> --password <password>
+~~~~
+
+Listing all possible locations
+~~~
+az appservice list-locations --sku F1
+~~~
+
+Creating new group directory
+~~~
+az group create --name <your group name> --location "East US"
+~~~
+
+Set group as default
+~~~
+az configure --defaults group=<your group name>
+~~~
+
+Setting up a free-tier billing plan
+~~~
+az appservice plan create --name <your plan name> --sku FREE
+~~~
+
+Setting your plan as default
+~~~
+az configure --defaults plan=<your plan name>
+~~~
+
+~~~
+az webapp create --name deploy-demo-node-app --deployment-local-git --plan deployPlan
+az webapp create --name deploy-demo-node-app-staging --deployment-local-git --plan deployPlan
+~~~
+
+~~~
+git remote add az_staging https://deploy-emojifier@deployemojifierstaging.scm.azurewebsites.net/deployEmojifierStaging.git
+git remote add az_prod https://deploy-emojifier@deployemojifier.scm.azurewebsites.net/deployEmojifier.git
 ~~~
 
 Configuring the environment variable in Heroku (GUI based option also present)
 ~~~
-heroku config:set MONGO_URL=<MongoDB Atlas connection string> --remote production
-heroku config:set NG_CMD=prod --remote production
+az webapp config appsettings set --name deploy-demo-node-app --settings MONGO_URL="<MongoDB Atlas connection string>"
+az webapp config appsettings set --name deploy-demo-node-app --settings NG_CMD="prod"
 ~~~
 
-Setting remote and pushing  
 ~~~
-heroku git:remote -a <your unique heroku website name ex. guarded-plains-08242>
-git push heroku master
+git add.
+git commit -m "final version"
+git push az_prod master
+~~~
+
+Browse to the website
+~~~
+az webapp browse --name <your application name>
+~~~
+
+Setting different targets for git (optional)
+~~~
+git config push.default upstream
+git branch --set-upstream-to az_prod/master master
+git branch --set-upstream-to az_staging/master staging
 ~~~
 
 Congratulations, your website should be [live](https://deploy-demo-node-app.azurewebsites.net/) now🎉!!
