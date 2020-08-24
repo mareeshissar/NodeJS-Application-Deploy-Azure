@@ -4,7 +4,7 @@
 Initial setup
 1. Sign up for [Azure](https://azure.microsoft.com/en-us/) account (credit card details required)
 2. Install [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-windows?view=azure-cli-latest&tabs=azure-cli)
-3. Setup your MongoDB Atlas account (make sure to set the IP access setting in mongodb atlas such that everyone can acess that)
+3. Setup your MongoDB Atlas account (make sure to set the IP access setting in mongodb atlas such that everyone can access that)
 4. Create a new user, database and collection
 
 Connecting to MongoDB Atlas cluster (via command line)
